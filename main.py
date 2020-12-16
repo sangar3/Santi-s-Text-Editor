@@ -12,14 +12,24 @@ root.iconbitmap(r'textIcon.ico')
 
 #Create New File Functions
 def new_file():
+    # DEL Prev Text
     my_text.delete("1.0",END)
+    #Update Status Bar
     root.title('New File -Santi\'s Text Editor')
     status_bar.config(text="New File      ")
 
 
 def open_file():
+    #DEL Prev Text
+    my_text.delete("1.0", END)
 
-
+    #Grab Filename
+    text_file = filedialog.askopenfilename(initialdir="C:/Python/Santi-s-Text-Editor",  title="Open File",
+                                       filetypes=(("Text Files","*.txt"),("HTML Files","*.html"),("All Files","*.*") ))
+    name = text_file
+    status_bar.config(text=f'{name}       ')
+    name = name.replace("C:/Python/Santi-s-Text-Editor/","")
+    root.title(f'{name} - Santi\'s Text Editor')
 #Create Main Frame
 my_frame = Frame(root)
 
@@ -50,7 +60,7 @@ root.config(menu=my_menu)
 file_menu = Menu(my_menu, tearoff=False)
 my_menu.add_cascade(label="File", menu=file_menu)
 file_menu.add_command(label="New", command=new_file)
-file_menu.add_command(label="Open" command=open_file)
+file_menu.add_command(label="Open", command=open_file)
 file_menu.add_command(label="Save")
 file_menu.add_command(label="Save As")
 file_menu.add_separator()
