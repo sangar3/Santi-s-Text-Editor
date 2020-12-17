@@ -40,6 +40,24 @@ def open_file():
     #Closed the opened file
     text_file.close()
 
+
+def save_as_file():
+    text_file = filedialog.asksaveasfilename(defaultextension=".*", initialdir="C:/Python/Santi-s-Text-Editor",
+                                             title="Save File",filetypes=(("Text Files","*.txt"),
+                                                                          ("HTML Files","*.html"),("All Files","*.*") ))
+    if text_file:
+        #Update Status Bars
+        name = text_file
+        status_bar.config(text=f'Saved:{name}       ')
+        name = name.replace("C:/Python/Santi-s-Text-Editor/","")
+        root.title(f'{name} - Santi\'s Text Editor')
+
+        #Save the file
+        text_file = open(text_file,'w')
+        text_file.write(my_text.get(1.0,END)) #Grabbing file content
+        #close the file
+        text_file.close()
+
 #Create Main Frame
 my_frame = Frame(root)
 
@@ -66,18 +84,18 @@ my_text.pack()
 my_menu = Menu(root)
 root.config(menu=my_menu)
 
-#Add File Menu
+#File Menu
 file_menu = Menu(my_menu, tearoff=False)
 my_menu.add_cascade(label="File", menu=file_menu)
 file_menu.add_command(label="New", command=new_file)
 file_menu.add_command(label="Open", command=open_file)
 file_menu.add_command(label="Save")
-file_menu.add_command(label="Save As")
+file_menu.add_command(label="Save As", command=save_as_file)
 file_menu.add_separator()
 file_menu.add_command(label="Exit",command=root.quit)
 
 
-#Add Edit Menu
+#Edit Menu
 edit_menu = Menu(my_menu, tearoff=False)
 my_menu.add_cascade(label="Edit", menu=edit_menu)
 edit_menu.add_command(label="Cut")
