@@ -23,13 +23,23 @@ def open_file():
     #DEL Prev Text
     my_text.delete("1.0", END)
 
-    #Grab Filename
+    #Grab certain Filename
     text_file = filedialog.askopenfilename(initialdir="C:/Python/Santi-s-Text-Editor",  title="Open File",
                                        filetypes=(("Text Files","*.txt"),("HTML Files","*.html"),("All Files","*.*") ))
+    #Update Status Bars
     name = text_file
     status_bar.config(text=f'{name}       ')
     name = name.replace("C:/Python/Santi-s-Text-Editor/","")
     root.title(f'{name} - Santi\'s Text Editor')
+
+    #Open the file
+    text_file = open(text_file, 'r')
+    FileContent = text_file.read()
+    #Add file to Textbox
+    my_text.insert(END,FileContent)
+    #Closed the opened file
+    text_file.close()
+
 #Create Main Frame
 my_frame = Frame(root)
 
