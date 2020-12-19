@@ -8,6 +8,12 @@ root.title("Santi's Text Editor")
 root.geometry("1200x660")
 root.iconbitmap(r'textIcon.ico')
 
+
+#Global vars
+global open_status_name
+open_status_name = False
+
+
 #FUNCTIONS
 
 #Create New File Functions
@@ -18,6 +24,8 @@ def new_file():
     root.title('New File -Santi\'s Text Editor')
     status_bar.config(text="New File      ")
 
+    global open_status_name
+    open_status_name = False
 
 def open_file():
     #DEL Prev Text
@@ -26,6 +34,12 @@ def open_file():
     #Grab certain Filename
     text_file = filedialog.askopenfilename(initialdir="C:/Python/Santi-s-Text-Editor",  title="Open File",
                                        filetypes=(("Text Files","*.txt"),("HTML Files","*.html"),("All Files","*.*") ))
+    #Checking if there is filename
+    if text_file:
+        #global filename
+        global open_status_name
+        open_status_name = text_file
+
     #Update Status Bars
     name = text_file
     status_bar.config(text=f'{name}       ')
@@ -40,7 +54,6 @@ def open_file():
     #Closed the opened file
     text_file.close()
 
-
 def save_as_file():
     text_file = filedialog.asksaveasfilename(defaultextension=".*", initialdir="C:/Python/Santi-s-Text-Editor",
                                              title="Save File",filetypes=(("Text Files","*.txt"),
@@ -52,11 +65,25 @@ def save_as_file():
         name = name.replace("C:/Python/Santi-s-Text-Editor/","")
         root.title(f'{name} - Santi\'s Text Editor')
 
-        #Save the file
-        text_file = open(text_file,'w')
-        text_file.write(my_text.get(1.0,END)) #Grabbing file content
-        #close the file
+        # Save the file
+        text_file = open(text_file, 'w')
+        text_file.write(my_text.get(1.0, END))  # Grabbing file content
+        # close the file
         text_file.close()
+
+def save_file():
+    global open_status_name
+    if open_status_name:
+        # Save the file
+        text_file = open(open_status_name, 'w')
+        text_file.write(my_text.get(1.0, END))  # Grabbing file content
+        # close the file
+        text_file.close()
+        #add pop up when file is saved
+        status_bar.config(text=f'Saved:{open_status_name}       ')
+    else:
+        save_as_file()
+
 
 #Create Main Frame
 my_frame = Frame(root)
@@ -89,7 +116,7 @@ file_menu = Menu(my_menu, tearoff=False)
 my_menu.add_cascade(label="File", menu=file_menu)
 file_menu.add_command(label="New", command=new_file)
 file_menu.add_command(label="Open", command=open_file)
-file_menu.add_command(label="Save")
+file_menu.add_command(label="Save", command=save_file)
 file_menu.add_command(label="Save As", command=save_as_file)
 file_menu.add_separator()
 file_menu.add_command(label="Exit",command=root.quit)
