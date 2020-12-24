@@ -8,11 +8,12 @@ root.title("Santi's Text Editor")
 root.geometry("1200x660")
 root.iconbitmap(r'textIcon.ico')
 
-
 #Global vars
 global open_status_name
 open_status_name = False
 
+global selected
+selected = False
 
 #FUNCTIONS
 
@@ -84,6 +85,45 @@ def save_file():
     else:
         save_as_file()
 
+#e = event
+
+def cut_text(e):
+    global selected
+    # check if we used keyboard shortcuts
+    if e:
+        selected = root.clipboard_get()
+    else:
+        if my_text.selection_get():
+            #Grab selected text from text box
+            selected = my_text.selection_get()
+
+            #delete Selected Text From text box from first to last
+            my_text.delete("sel.first","sel.last")
+            # Clear the clipboard then append
+            root.clipboard_clear()
+            root.clipboard_append(selected)
+
+def copy_text(e):
+    global selected
+    # check if we used keyboard shortcuts
+    if e:
+        selected = root.clipboard_get()
+    if my_text.selection_get():
+        # Grab selected text from text box
+        selected = my_text.selection_get()
+        #Clear the clipboard then append
+        root.clipboard_clear()
+        root.clipboard_append(selected)
+
+def paste_text(e):
+    global selected
+    # check if we used keyboard shortcuts
+    if e:
+        selected = root.clipboard_get()
+    else:
+        if selected:
+            position = my_text.index(INSERT)
+            my_text.insert(position,selected)
 
 #Create Main Frame
 my_frame = Frame(root)
@@ -100,7 +140,6 @@ text_scroll.pack(side=RIGHT, fill=Y)
 my_text = Text(my_frame, width=97, height=25,
                font=("Montserrat",16), selectbackground="yellow", selectforeground="black", undo=True,
                yscrollcommand=text_scroll.set)
-
 
 #configure our Scrollbar
 text_scroll.config(command=my_text.yview)
@@ -121,24 +160,23 @@ file_menu.add_command(label="Save As", command=save_as_file)
 file_menu.add_separator()
 file_menu.add_command(label="Exit",command=root.quit)
 
-
 #Edit Menu
 edit_menu = Menu(my_menu, tearoff=False)
 my_menu.add_cascade(label="Edit", menu=edit_menu)
-edit_menu.add_command(label="Cut")
-edit_menu.add_command(label="Copy")
-edit_menu.add_command(label="Paste")
-edit_menu.add_command(label="Undo")
-edit_menu.add_command(label="Redo")
-
-
-
+edit_menu.add_command(label="Cut                 Ctrl+X", command=lambda: cut_text(False))
+edit_menu.add_command(label="Copy                Ctrl+C", command=lambda: copy_text(False))
+edit_menu.add_command(label="Paste               Ctrl+V", command=lambda: paste_text(False))
+edit_menu.add_command(label="Undo                Ctrl+Z")
+edit_menu.add_command(label="Redo                Ctrl+Shift+Z")
 
 #Add Status Bar at bottom
 status_bar = Label(root,text='Ready        ',anchor=E)
 status_bar.pack(fill=X,side=BOTTOM,ipady=5)
 
+#Edit binding
+root.bind('<Control-x>',cut_text)
+root.bind('<Control-c>',copy_text)
+root.bind('<Control-v>',paste_text)
 
-
-
+#Main Loop of App
 root.mainloop()
