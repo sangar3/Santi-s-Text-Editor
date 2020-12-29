@@ -34,7 +34,7 @@ def open_file():
 
     #Grab certain Filename
     text_file = filedialog.askopenfilename(initialdir="C:/Python/Santi-s-Text-Editor",  title="Open File",
-                                       filetypes=(("Text Files","*.txt"),("HTML Files","*.html"),("All Files","*.*") ))
+                                       filetypes=(("All Files","*.*") ,("Text Files","*.txt"),("HTML Files","*.html"),))
     #Checking if there is filename
     if text_file:
         #global filename
