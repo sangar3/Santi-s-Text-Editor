@@ -5,8 +5,8 @@ from tkinter import font
 #tkinter window
 root = Tk()
 root.title("Santi's Text Editor")
-root.geometry("1200x660")
-root.iconbitmap(r'textIcon.ico')
+root.geometry("1200x680")
+root.iconbitmap('Fonts/textIcon.ico')  # ICON PIC
 
 #Global vars
 global open_status_name
@@ -125,25 +125,35 @@ def paste_text(e):
             position = my_text.index(INSERT)
             my_text.insert(position,selected)
 
+def select_all(e):
+    my_text.tag_add('sel','1.0','end')
+
+def delete_all(e):
+    my_text.delete(1.0, END)
+
 #Create Main Frame
 my_frame = Frame(root)
 
 my_frame.pack(pady=5)
 
 #Create Scrollbar for Text Box
-text_scroll = Scrollbar(my_frame)
-text_scroll.pack(side=RIGHT, fill=Y)
+Vert_scroll = Scrollbar(my_frame)
+Vert_scroll.pack(side=RIGHT, fill=Y)
+
+#Horizontal ScrollBar
+hor_scroll = Scrollbar(my_frame, orient="horizontal")
+hor_scroll.pack(side=BOTTOM,fill=X)
 
 #Create Text Box
 
 #Text Widget
 my_text = Text(my_frame, width=97, height=25,
                font=("Montserrat",16), selectbackground="yellow", selectforeground="black", undo=True,
-               yscrollcommand=text_scroll.set)
+               yscrollcommand=Vert_scroll.set, xscrollcommand=hor_scroll.set, wrap="none")
 
 #configure our Scrollbar
-text_scroll.config(command=my_text.yview)
-
+Vert_scroll.config(command=my_text.yview)
+hor_scroll.config(command=my_text.xview)
 my_text.pack()
 
 #Create Menu
@@ -163,20 +173,31 @@ file_menu.add_command(label="Exit",command=root.quit)
 #Edit Menu
 edit_menu = Menu(my_menu, tearoff=False)
 my_menu.add_cascade(label="Edit", menu=edit_menu)
-edit_menu.add_command(label="Cut                 Ctrl+X", command=lambda: cut_text(False))
-edit_menu.add_command(label="Copy                Ctrl+C", command=lambda: copy_text(False))
-edit_menu.add_command(label="Paste               Ctrl+V", command=lambda: paste_text(False))
-edit_menu.add_command(label="Undo                Ctrl+Z")
-edit_menu.add_command(label="Redo                Ctrl+Shift+Z")
+edit_menu.add_command(label="Cut", command=lambda: cut_text(False), accelerator="Ctrl+X")
+edit_menu.add_command(label="Copy", command=lambda: copy_text(False), accelerator="Ctrl+X")
+edit_menu.add_command(label="Paste", command=lambda: paste_text(False), accelerator="Ctrl+V")
+edit_menu.add_separator()
+edit_menu.add_command(label="Undo", command=my_text.edit_undo, accelerator="Ctrl+Z")
+edit_menu.add_command(label="Redo",command=my_text.edit_redo, accelerator="Ctrl+Y")
+edit_menu.add_separator()
+edit_menu.add_command(label="Select All",command=lambda:select_all(False), accelerator="Ctrl+A")
+edit_menu.add_command(label="Delete All",command=lambda:delete_all(False))
+
+
+
+
 
 #Add Status Bar at bottom
 status_bar = Label(root,text='Ready        ',anchor=E)
-status_bar.pack(fill=X,side=BOTTOM,ipady=5)
+status_bar.pack(fill=X,side=BOTTOM,ipady=15)
 
 #Edit binding
 root.bind('<Control-x>',cut_text)
 root.bind('<Control-c>',copy_text)
 root.bind('<Control-v>',paste_text)
+
+#Select Binding
+root.bind('<Control-a>',select_all)
 
 #Main Loop of App
 root.mainloop()
